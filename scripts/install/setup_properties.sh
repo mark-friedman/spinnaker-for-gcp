@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Note that this file has been changed from the orginal to use less beefy machines
+# and to hard code an Agentic domain.
+
 # PROJECT_ID should be set, but we will try to determine via gcloud config if not set.
 # DEPLOYMENT_NAME, GKE_CLUSTER and ZONE are optional.
 # If GKE_CLUSTER is set, ZONE is required. (This indicates that we should install in an existing cluster.)
@@ -53,7 +56,7 @@ fi
 
 NETWORK="default"
 SUBNET="default"
-ZONE=${ZONE:-us-east1-c}
+ZONE=${ZONE:-us-west1-a}
 REGION=$(echo $ZONE | cut -d - -f 1,2)
 
 source ~/cloudshell_open/spinnaker-for-gcp/scripts/manage/service_utils.sh
@@ -153,10 +156,14 @@ export GKE_CLUSTER=${GKE_CLUSTER:-\$DEPLOYMENT_NAME}
 
 # These are only considered if a new GKE cluster is being created.
 export GKE_RELEASE_CHANNEL=stable
-export GKE_MACHINE_TYPE=n1-highmem-4
+export GKE_MACHINE_TYPE=e2-standard-4
 export GKE_DISK_TYPE=pd-standard
 export GKE_DISK_SIZE=100
-export GKE_NUM_NODES=3
+export GKE_NUM_NODES=2
+# export GKE_MACHINE_TYPE=n1-highmem-4
+# export GKE_DISK_TYPE=pd-standard
+# export GKE_DISK_SIZE=100
+# export GKE_NUM_NODES=3
 
 # See TZ column in https://en.wikipedia.org/wiki/List_of_tz_database_time_zones
 export TIMEZONE=$(cat /etc/timezone)
@@ -193,7 +200,8 @@ export SECRET_NAME=\$DEPLOYMENT_NAME-oauth-client-secret
 
 # If you own a domain name and want to use that instead of this automatically-assigned one,
 # specify it here (you must be able to configure the dns settings).
-export DOMAIN_NAME=\$DEPLOYMENT_NAME.endpoints.\$PROJECT_ID.cloud.goog
+export DOMAIN_NAME=spinnaker.dev.agentic.ai
+# export DOMAIN_NAME=\$DEPLOYMENT_NAME.endpoints.\$PROJECT_ID.cloud.goog
 
 # This email address will be granted permissions as an IAP-Secured Web App User.
 export IAP_USER=$(gcloud auth list --format="value(account)" --filter="status=ACTIVE")
